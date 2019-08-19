@@ -6,8 +6,8 @@
 
     WHU_login.sh -u <USERNAME> -p <PASSWORD> [-t <TYPE>]
     
-                 TYPE: campus, CT, CMCC.
-                       campus: 校园网.
+                 TYPE: CERNET, CT, CMCC.
+                       CERNET: 教育网.
                        CT:     中国电信.
                        CMCC:   中国移动.
-                       默认选项是校园网.
+                       默认选项是教育网.
