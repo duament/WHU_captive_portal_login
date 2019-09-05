@@ -65,12 +65,12 @@ print_result() {
     else
         RESULT=$(echo $LOGIN_RESULT | jq -j '.result')
         MESSAGE=$(echo $LOGIN_RESULT | jq -j '.message')
-        if [ "$RESULT" -eq 'fail' ]
+        if [ "$RESULT" = 'fail' ]
         then
             echo -n 'Login failed: '
             echo "$MESSAGE"
             exit 1
-        elif [ "$RESULT" -eq 'success' ]
+        elif [ "$RESULT" = 'success' ]
         then
             echo 'Success'
             exit 0
