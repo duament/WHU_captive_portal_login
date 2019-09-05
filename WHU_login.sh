@@ -63,8 +63,8 @@ print_result() {
     then
         echo $LOGIN_RESULT
     else
-        RESULT=$(echo $LOGIN_RESULT | jq -r '.result')
-        MESSAGE=$(echo $LOGIN_RESULT | jq -r '.message')
+        RESULT=$(echo $LOGIN_RESULT | jq -j '.result')
+        MESSAGE=$(echo $LOGIN_RESULT | jq -j '.message')
         if [ "$RESULT" -eq 'fail' ]
         then
             echo -n 'Login failed: '
