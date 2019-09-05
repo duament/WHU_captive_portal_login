@@ -33,39 +33,6 @@ set_type() {
     esac
 }
 
-initiate() {
-    while getopts  "hu:p:t:" opt; do
-        case $opt in
-            h)
-                help
-                ;;
-            u)
-                USERNAME="$OPTARG"
-                ;;
-            p)
-                PASSWORD="$OPTARG"
-                ;;
-            t)
-                set_type $OPTARG
-                ;;
-            *)
-                help
-                ;;
-        esac
-    done
-
-    if [ -z "$USERNAME" ] || [ -z "$PASSWORD" ]
-    then
-        help
-    fi
-
-    if ! type curl > /dev/null
-    then
-        echo '"curl" is required to run the script'
-        exit 1
-    fi
-}
-
 detect() {
     curl -s -v "$DETECT_URL" --max-time 10 -H "User-Agent: $UA" 2>&1 ||
         ( echo 'Connection error' && exit 1 )
@@ -116,7 +83,36 @@ print_result() {
     fi
 }
 
-initiate
+while getopts  "hu:p:t:" opt; do
+    case $opt in
+        h)
+            help
+            ;;
+        u)
+            USERNAME="$OPTARG"
+            ;;
+        p)
+            PASSWORD="$OPTARG"
+            ;;
+        t)
+            set_type $OPTARG
+            ;;
+        *)
+            help
+            ;;
+    esac
+done
+
+if [ -z "$USERNAME" ] || [ -z "$PASSWORD" ]
+then
+    help
+fi
+
+if ! type curl > /dev/null
+then
+    echo '"curl" is required to run the script'
+    exit 1
+fi
 
 #TEST_RESULT=$(curl -s -o /dev/null -I -w "%{http_code}" ${DETECT_URL})
 TEST_RESULT="$(detect)"
