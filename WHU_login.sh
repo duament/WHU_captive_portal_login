@@ -89,11 +89,11 @@ STATUS_CODE="$(echo "$TEST_RESULT" | grep -oE 'HTTP/[.0-9]{1,5} ([0-9]{3}) ' | a
 LOGIN_PAGE_URL="$(echo "$TEST_RESULT" | grep 'script' | grep -o \''.*'\' | tr -d \''\n')"
 queryString="$(echo "$LOGIN_PAGE_URL" | grep -o '?.*$' | tr -d '?\n')"
 
-if [ $STATUS_CODE -eq "200" ]
+if [ "$STATUS_CODE" -eq "200" ]
 then
     LOGIN_RESULT=$(login)
     print_result || echo $LOGIN_RESULT
-elif [ $STATUS_CODE -eq "204" ]
+elif [ "$STATUS_CODE" -eq "204" ]
 then
     echo 'Already logged in!'
 else
