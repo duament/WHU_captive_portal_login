@@ -57,9 +57,18 @@ login() {
 }
 
 print_result() {
-    if ! type jq > /dev/null
+    if ! type jq > /dev/null 2>&1
     then
         echo $LOGIN_RESULT
+        if echo "$LOGIN_RESULT" | grep --quiet '"result":"success"'
+        then
+            echo 'Success'
+            exit 0
+        elif echo "$LOGIN_RESULT" | grep --quiet '"result":"fail"'
+        then
+            echo 'Login failed'
+            exit 1
+        fi
     else
         RESULT=$(echo $LOGIN_RESULT | jq -j '.result')
         MESSAGE=$(echo $LOGIN_RESULT | jq -j '.message')
@@ -106,7 +115,7 @@ then
     help
 fi
 
-if ! type curl > /dev/null
+if ! type curl > /dev/null 2>&1
 then
     echo '"curl" is required to run the script'
     exit 1
