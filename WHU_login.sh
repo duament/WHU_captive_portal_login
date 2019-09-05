@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/sh
 unset http_proxy
 unset https_proxy
 DETECT_URL='http://conn1.oppomobile.com/generate_204'
