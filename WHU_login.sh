@@ -33,7 +33,45 @@ set_type() {
     esac
 }
 
-login(){
+initiate() {
+    while getopts  "hu:p:t:" opt; do
+        case $opt in
+            h)
+                help
+                ;;
+            u)
+                USERNAME="$OPTARG"
+                ;;
+            p)
+                PASSWORD="$OPTARG"
+                ;;
+            t)
+                set_type $OPTARG
+                ;;
+            *)
+                help
+                ;;
+        esac
+    done
+
+    if [ -z "$USERNAME" ] || [ -z "$PASSWORD" ]
+    then
+        help
+    fi
+
+    if ! type curl > /dev/null
+    then
+        echo '"curl" is required to run the script'
+        exit 1
+    fi
+}
+
+detect() {
+    curl -s -v "$DETECT_URL" --max-time 10 -H "User-Agent: $UA" 2>&1 ||
+        ( echo 'Connection error' && exit 1 )
+}
+
+login() {
     curl -s "$LOGIN_POST_URL" --compressed --max-time 15 \
         -H "User-Agent: $UA" \
         -H 'Accept: */*' \
@@ -49,42 +87,39 @@ login(){
         --data-urlencode operatorPwd="" \
         --data-urlencode operatorUserId="" \
         --data-urlencode validcode="" \
-        --data-urlencode passwordEncrypt="false"
+        --data-urlencode passwordEncrypt="false" ||
+        ( echo 'Login failed: connection error' && exit 1 )
 }
 
-print_result(){
-    echo $LOGIN_RESULT
-    # echo $LOGIN_RESULT | jq -r '.result'
-    # echo $LOGIN_RESULT | jq -r '.message'
+print_result() {
+    if ! type jq > /dev/null
+    then
+        echo $LOGIN_RESULT
+    else
+        RESULT=$(echo $LOGIN_RESULT | jq -r '.result')
+        MESSAGE=$(echo $LOGIN_RESULT | jq -r '.message')
+        if [ "$RESULT" -eq 'fail' ]
+        then
+            echo -n 'Login failed: '
+            echo "$MESSAGE"
+            exit 1
+        elif [ "$RESULT" -eq 'success' ]
+        then
+            echo 'Success'
+            exit 0
+        else
+            echo -n 'Unkown result: '
+            echo "$RESULT"
+            echo "$MESSAGE"
+            exit 1
+        fi
+    fi
 }
 
-while getopts  "hu:p:t:" opt; do
-    case $opt in
-        h)
-            help
-            ;;
-        u)
-            USERNAME="$OPTARG"
-            ;;
-        p)
-            PASSWORD="$OPTARG"
-            ;;
-        t)
-            set_type $OPTARG
-            ;;
-        *)
-            help
-            ;;
-    esac
-done
-
-if [ -z "$USERNAME" ] || [ -z "$PASSWORD" ]
-then
-    help
-fi
+initiate
 
 #TEST_RESULT=$(curl -s -o /dev/null -I -w "%{http_code}" ${DETECT_URL})
-TEST_RESULT="$(curl -s -v "$DETECT_URL" --max-time 10 -H "User-Agent: $UA" 2>&1)"
+TEST_RESULT="$(detect)"
 STATUS_CODE="$(echo "$TEST_RESULT" | grep -oE 'HTTP/[.0-9]{1,5} ([0-9]{3}) ' | awk '{printf $NF}')"
 LOGIN_PAGE_URL="$(echo "$TEST_RESULT" | grep 'script' | grep -o \''.*'\' | tr -d \''\n')"
 queryString="$(echo "$LOGIN_PAGE_URL" | grep -o '?.*$' | tr -d '?\n')"
@@ -92,11 +127,14 @@ queryString="$(echo "$LOGIN_PAGE_URL" | grep -o '?.*$' | tr -d '?\n')"
 if [ "$STATUS_CODE" -eq "200" ]
 then
     LOGIN_RESULT=$(login)
-    print_result || echo $LOGIN_RESULT
+    print_result
 elif [ "$STATUS_CODE" -eq "204" ]
 then
-    echo 'Already logged in!'
+    echo 'Already logged in'
+    exit 0
 else
-    echo 'Unknown error'
+    echo -n 'Unknown status code: '
+    echo "$STATUS_CODE"
+    exit 1
 fi
 
