@@ -13,7 +13,7 @@ help() {
     echo "                   CT:     中国电信."
     echo "                   CMCC:   中国移动."
     echo "                   The default type is CERNET."
-    exit
+    exit 1
 }
 
 set_type() {
