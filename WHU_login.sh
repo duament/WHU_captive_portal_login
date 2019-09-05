@@ -34,8 +34,7 @@ set_type() {
 }
 
 detect() {
-    curl -s -v "$DETECT_URL" --max-time 10 -H "User-Agent: $UA" 2>&1 ||
-        ( echo 'Connection error' && exit 1 )
+    curl -s -v "$DETECT_URL" --max-time 10 -H "User-Agent: $UA" 2>&1
 }
 
 login() {
@@ -54,8 +53,7 @@ login() {
         --data-urlencode operatorPwd="" \
         --data-urlencode operatorUserId="" \
         --data-urlencode validcode="" \
-        --data-urlencode passwordEncrypt="false" ||
-        ( echo 'Login failed: connection error' && exit 1 )
+        --data-urlencode passwordEncrypt="false"
 }
 
 print_result() {
@@ -116,6 +114,12 @@ fi
 
 #TEST_RESULT=$(curl -s -o /dev/null -I -w "%{http_code}" ${DETECT_URL})
 TEST_RESULT="$(detect)"
+if [ $? != 0 ]
+then
+    echo 'Connection error'
+    exit 1
+fi
+
 STATUS_CODE="$(echo "$TEST_RESULT" | grep -oE 'HTTP/[.0-9]{1,5} ([0-9]{3}) ' | awk '{printf $NF}')"
 LOGIN_PAGE_URL="$(echo "$TEST_RESULT" | grep 'script' | grep -o \''.*'\' | tr -d \''\n')"
 queryString="$(echo "$LOGIN_PAGE_URL" | grep -o '?.*$' | tr -d '?\n')"
@@ -123,6 +127,11 @@ queryString="$(echo "$LOGIN_PAGE_URL" | grep -o '?.*$' | tr -d '?\n')"
 if [ "$STATUS_CODE" -eq "200" ]
 then
     LOGIN_RESULT=$(login)
+    if [ $? != 0 ]
+    then
+        echo 'Login failed: connection error'
+        exit 1
+    fi
     print_result
 elif [ "$STATUS_CODE" -eq "204" ]
 then
