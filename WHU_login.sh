@@ -11,6 +11,7 @@ help() {
     echo "             TYPE: CERNET, CT, CMCC."
     echo "                   CERNET: 教育网."
     echo "                   CT:     中国电信."
+    echo "                   CU:     中国联通."
     echo "                   CMCC:   中国移动."
     echo "                   The default type is CERNET."
     exit 1
@@ -23,6 +24,9 @@ set_type() {
             ;;
         CT)
             TYPE='dianxin'
+            ;;
+        CU)
+            TYPE='liantong'
             ;;
         CMCC)
             TYPE='yidong'

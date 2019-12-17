@@ -9,5 +9,6 @@
                  TYPE: CERNET, CT, CMCC.
                        CERNET: 教育网.
                        CT:     中国电信.
+                       CU:     中国联通.
                        CMCC:   中国移动.
                        默认选项是教育网.
