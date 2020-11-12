@@ -19,7 +19,7 @@ unset http_proxy
 unset https_proxy
 DETECT_URL='http://conn1.oppomobile.com/generate_204'
 LOGIN_POST_URL='http://172.19.1.9:8080/eportal/InterFace.do?method=login'
-UA='Mozilla/5.0 (X11; Linux x86_64; rv:71.0) Gecko/20100101 Firefox/71.0'
+UA='Mozilla/5.0 (X11; Linux x86_64; rv:82.0) Gecko/20100101 Firefox/82.0'
 TYPE='Internet'
 
 help() {
