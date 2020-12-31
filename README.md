@@ -4,14 +4,38 @@
 
 ## 用法
 
-    WHU_login.sh -u <USERNAME> -p <PASSWORD> [-t <TYPE>]
+    WHU_login.sh -u <USERNAME> -p <PASSWORD> [-t <ISP>]
     
-                 TYPE: CERNET, CT, CU, CMCC.
+                 ISP: CERNET, CT, CU, CMCC.
                        CERNET: 教育网.
                        CT:     中国电信.
                        CU:     中国联通.
                        CMCC:   中国移动.
                        默认选项是教育网.
+
+---
+
+    WHU_misc.sh <COMMAND> [<OPT_ARG1> <OPT_ARG2>]
+
+        COMMAND: info, logout, reg, dereg, deregmac, kickall, switch.
+
+            info:  打印当前用户信息.
+                注: 安装 jq 之后更易读.
+
+            logout:  下线当前设备.
+
+            reg:  注册当前设备的 MAC 地址，开启无感认证.
+
+            dereg:  取消当前设备的无感认证.
+                注: 此命令貌似总返回 {"result":"success","message":"取消无感认证失败"}
+
+            deregmac <USERNAME> <MAC>:  取消指定设备的无感认证.
+                注: 此命令貌似也总返回 {"result":"success","message":"取消无感认证失败"}
+
+            kickall <USERNAME> <PASSWORD>:  下线当前用户的所有设备.
+
+            switch <ISP>:  切换 ISP.
+                ISP: CERNET, CT, CU, CMCC
 
 ## 自动执行
 
