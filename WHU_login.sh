@@ -26,7 +26,7 @@ TYPE='Internet'
 
 help() {
     echo "WHU_login.sh -u <USERNAME> -p <PASSWORD> [-t <TYPE>]"
-    echo "             TYPE: CERNET, CT, CMCC."
+    echo "             TYPE: CERNET, CT, CU, CMCC."
     echo "                   CERNET: 教育网."
     echo "                   CT:     中国电信."
     echo "                   CU:     中国联通."

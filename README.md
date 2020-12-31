@@ -6,7 +6,7 @@
 
     WHU_login.sh -u <USERNAME> -p <PASSWORD> [-t <TYPE>]
     
-                 TYPE: CERNET, CT, CMCC.
+                 TYPE: CERNET, CT, CU, CMCC.
                        CERNET: 教育网.
                        CT:     中国电信.
                        CU:     中国联通.
